@@ -2,19 +2,18 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<title>Проверяем ваш браузер…</title>
+<title>Проверяем ваш браузер</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
     :root {
-        --bg-primary: #0a0d16;
-        --bg-card: rgba(32, 38, 62, 0.85);
+        --bg-primary: #050913;
+        --bg-card: rgba(19, 27, 51, 0.88);
         --accent: #0081ff;
-        --accent-soft: rgba(0, 129, 255, 0.18);
         --text-main: #e8eefc;
         --text-muted: #9cabd7;
-        --shadow: 0 26px 60px rgba(1, 11, 34, 0.55);
         --radius: 22px;
-        --font: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --shadow: 0 26px 60px rgba(1, 11, 34, 0.55);
+        --font: "Inter", "Segoe UI", system-ui, sans-serif;
     }
     * { box-sizing: border-box; }
     body {
@@ -24,143 +23,134 @@
         justify-content: center;
         align-items: center;
         background:
-            radial-gradient(circle at top, rgba(0,129,255,.18) 0, rgba(0,129,255,0) 45%),
-            linear-gradient(135deg, #05060b 0%, #050918 100%);
+            radial-gradient(circle at top right, rgba(0,129,255,.12), rgba(0,129,255,0) 55%),
+            radial-gradient(circle at top left, rgba(0,70,255,.16), rgba(0,70,255,0) 45%),
+            linear-gradient(135deg, #02040a 0%, #050913 100%);
         color: var(--text-main);
         font-family: var(--font);
+        padding: clamp(18px, 3vw, 26px);
     }
     .card {
-        width: min(620px, 92vw);
+        width: min(640px, 96vw);
         background: var(--bg-card);
         border-radius: var(--radius);
-        padding: 48px clamp(28px, 5vw, 54px);
-        box-shadow: var(--shadow);
+        padding: clamp(36px, 6vw, 52px);
         position: relative;
-        border: 1px solid rgba(152, 181, 255, 0.08);
         overflow: hidden;
+        border: 1px solid rgba(152, 181, 255, 0.08);
+        box-shadow: var(--shadow);
     }
     .card::before {
         content: "";
         position: absolute;
-        inset: -20% auto auto -5%;
-        width: 340px;
-        height: 340px;
-        background: radial-gradient(circle at center, rgba(0,129,255,.22), transparent 65%);
+        inset: -25% auto auto -6%;
+        width: 360px;
+        height: 360px;
+        background: radial-gradient(circle, rgba(0,129,255,.22), transparent 68%);
+        opacity: .65;
         filter: blur(1px);
-        opacity: .7;
     }
     header {
         display: flex;
         align-items: center;
-        gap: 18px;
-        margin-bottom: 36px;
+        gap: clamp(12px, 2.5vw, 18px);
+        margin-bottom: clamp(28px, 4vw, 42px);
         position: relative;
         z-index: 1;
     }
     .logo {
-        width: 58px;
-        height: 58px;
-        border-radius: 16px;
-        background: linear-gradient(135deg, rgba(0,129,255,.35), rgba(0,129,255,.8));
+        width: clamp(52px, 10vw, 60px);
+        height: clamp(52px, 10vw, 60px);
+        border-radius: 18px;
+        background: linear-gradient(135deg, rgba(0,129,255,.35), rgba(41,135,255,.85));
         display: grid;
         place-items: center;
-        font-size: 26px;
+        font-size: clamp(24px, 4vw, 28px);
         font-weight: 700;
         color: white;
-        letter-spacing: 1px;
-        text-transform: uppercase;
+        letter-spacing: .6px;
     }
-    .title-wrap h1 {
-        font-size: clamp(22px, 4vw, 28px);
+    .title h1 {
         margin: 0;
+        font-size: clamp(22px, 4vw, 30px);
         font-weight: 600;
     }
-    .title-wrap span {
-        display: block;
+    .title span {
         color: var(--text-muted);
+        display: block;
         font-size: clamp(13px, 3vw, 15px);
         margin-top: 4px;
     }
-    .status {
+    .status-box {
         position: relative;
         z-index: 1;
-        padding: 18px;
-        border: 1px solid rgba(0,129,255,.25);
-        border-radius: 14px;
-        background: rgba(0,129,255,.08);
+        background: rgba(0,129,255,0.08);
+        border-radius: 16px;
+        padding: clamp(18px, 3.5vw, 24px);
+        border: 1px solid rgba(0,129,255,0.22);
+        margin-bottom: clamp(28px, 4vw, 36px);
         display: flex;
+        flex-wrap: wrap;
         gap: 16px;
         align-items: center;
-        margin-bottom: 32px;
     }
     .spinner {
-        --size: 42px;
-        width: var(--size);
-        height: var(--size);
+        width: clamp(40px, 7vw, 48px);
+        height: clamp(40px, 7vw, 48px);
         border-radius: 50%;
-        border: 4px solid rgba(0,129,255,.25);
+        border: 4px solid rgba(0,129,255,.22);
         border-top-color: var(--accent);
         animation: spin 1.4s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .status-text strong {
-        display: block;
-        font-size: clamp(16px, 3.2vw, 19px);
-        margin-bottom: 4px;
+    .status-text strong { display: block; font-size: clamp(16px, 3.2vw, 19px); margin-bottom: 4px; }
+    .status-text span { color: var(--text-muted); font-size: clamp(13px, 3vw, 15px); }
+    .challenge-box {
+        position: relative;
+        z-index: 1;
+        background: rgba(6, 9, 20, 0.65);
+        border-radius: 14px;
+        border: 1px solid rgba(0,129,255,0.12);
+        padding: clamp(18px, 3.5vw, 24px);
+        display: grid;
+        place-items: center;
+        min-height: 150px;
+        margin-bottom: clamp(26px, 4vw, 34px);
     }
     .details {
         position: relative;
         z-index: 1;
-        background: rgba(10, 15, 28, 0.45);
+        background: rgba(6, 10, 20, 0.55);
         border-radius: 16px;
-        padding: 24px;
+        padding: clamp(20px, 3.5vw, 26px);
         border: 1px solid rgba(152, 181, 255, 0.08);
     }
-    .row {
-        display: flex;
-        justify-content: space-between;
-        gap: 14px;
-        margin-bottom: 14px;
-        font-size: 15px;
-    }
-    .row span:first-child {
-        color: var(--text-muted);
-        letter-spacing: .02em;
-    }
-    .progress {
-        margin-top: 28px;
+    .row { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 14px; font-size: 15px; }
+    .row span:first-child { color: var(--text-muted); letter-spacing: .03em; }
+    .progress-steps {
+        margin-top: clamp(22px, 4vw, 30px);
         display: grid;
-        grid-template-columns: repeat(3, minmax(0,1fr));
-        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: clamp(12px, 3vw, 16px);
     }
     .step {
-        background: rgba(6, 9, 20, 0.55);
-        border: 1px solid rgba(0,129,255,0.12);
+        background: rgba(10, 14, 26, 0.7);
+        border: 1px solid rgba(0,129,255,0.15);
         border-radius: 14px;
         padding: 18px;
         text-align: center;
-        font-size: 14px;
         color: var(--text-muted);
-        backdrop-filter: blur(6px);
+        font-size: 14px;
     }
     .step.active {
         color: var(--text-main);
-        border-color: rgba(0,129,255,0.45);
+        border-color: rgba(0,129,255,0.42);
         box-shadow: 0 0 22px rgba(0,129,255,0.22);
     }
-    .footer-note {
-        margin-top: 26px;
-        font-size: 13px;
-        color: rgba(152, 171, 215, .75);
-        line-height: 1.6;
-        text-align: center;
-    }
-    @media (max-width: 540px) {
-        .card { padding: 36px 22px; }
-        header { gap: 14px; }
-        .status { flex-direction: column; align-items: flex-start; }
-        .spinner { --size: 34px; }
-        .progress { grid-template-columns: 1fr; }
+    .footer { margin-top: clamp(24px, 4vw, 32px); text-align: center; font-size: 13px; color: rgba(152, 171, 215, .75); line-height: 1.6; }
+    @media (max-width: 600px) {
+        .status-box { flex-direction: column; align-items: flex-start; }
+        .spinner { margin: 0 auto; }
         .row { flex-direction: column; gap: 4px; }
     }
 </style>
@@ -169,36 +159,28 @@
 <div class="card">
     <header>
         <div class="logo">CF</div>
-        <div class="title-wrap">
+        <div class="title">
             <h1>Подождите, мы проверяем ваш браузер</h1>
             <span>encrypted.rest защищён Managed Challenge от Cloudflare</span>
         </div>
     </header>
-    <section class="status">
-        <div class="spinner" aria-hidden="true"></div>
+
+    <section class="status-box">
+        <div class="spinner"></div>
         <div class="status-text">
-            <strong>Идёт проверка безопасности</strong>
-            Подождите несколько секунд, мы удостоверяемся, что вы — не бот.
+            <strong>Проверка безопасности</strong>
+            <span>Подождите пару секунд — мы удостоверяемся, что вы не бот.</span>
         </div>
     </section>
-    
-    <div class="cf-challenge">
+
+    <div class="challenge-box">
         ::CAPTCHA_BOX::
     </div>
-
-    <section class="status">
-        <div class="spinner" aria-hidden="true"></div>
-        <div class="status-text">
-            <strong>Идёт проверка безопасности</strong>
-            Подождите несколько секунд. Мы удостоверяемся, что вы — не бот,
-            и затем автоматически перенаправим вас на сайт.
-        </div>
-    </section>
 
     <section class="details">
         <div class="row">
             <span>Причина проверки</span>
-            <span>Повышенная активность с вашего IP / режим «Я под атакой»</span>
+            <span>Повышенная активность / режим «Я под атакой»</span>
         </div>
         <div class="row">
             <span>Защищаемый ресурс</span>
@@ -212,20 +194,17 @@
             <span>Ray ID</span>
             <span>{{ ray_id | default('xxxxxxxxxxxxxxxx') }}</span>
         </div>
-
-        <div class="progress">
+        <div class="progress-steps">
             <div class="step active">1. Анализ сигнатур и репутации</div>
             <div class="step">2. Проверка браузера и HTTP заголовков</div>
-            <div class="step">3. Сбор доказательств и выдача cookie</div>
+            <div class="step">3. Выдача cookie и перенаправление</div>
         </div>
     </section>
 
-    <p class="footer-note">
-        Если вы видите это сообщение более 5 секунд, убедитесь, что в браузере
-        включены cookie и JavaScript, либо обратитесь к администратору сайта,
-        указав Ray ID.
+    <p class="footer">
+        Если вы видите это сообщение более 5 секунд, убедитесь, что в браузере включены cookie и JavaScript.
+        При повторении проблемы обратитесь к администратору сайта и сообщите Ray ID.
     </p>
 </div>
 </body>
 </html>
-
