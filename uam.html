@@ -188,11 +188,11 @@
         </div>
         <div class="row">
             <span>Ваш IP</span>
-            <span>{{ visitor_ip | default('—') }}</span>
+            <span>::CLIENT_IP::</span>
         </div>
         <div class="row">
             <span>Ray ID</span>
-            <span>{{ ray_id | default('xxxxxxxxxxxxxxxx') }}</span>
+            <span>::RAY_ID::</span>
         </div>
         <div class="progress-steps">
             <div class="step active">1. Анализ сигнатур и репутации</div>
@@ -208,3 +208,4 @@
 </div>
 </body>
 </html>
+
