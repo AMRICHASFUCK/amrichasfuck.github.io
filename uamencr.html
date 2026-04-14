@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENCRYPTED — Security Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --green:        #00ff88;
+    --green-dim:    #00cc6a;
+    --green-dark:   #00994f;
+    --green-glow:   rgba(0,255,136,0.18);
+    --green-glow2:  rgba(0,255,136,0.06);
+    --bg:           #050e09;
+    --bg2:          #071210;
+    --bg3:          #0a1a12;
+    --border:       rgba(0,255,136,0.15);
+    --border2:      rgba(0,255,136,0.3);
+    --text:         #c8e8d4;
+    --text-dim:     rgba(180,220,195,0.5);
+    --text-muted:   rgba(140,180,155,0.35);
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    overflow-x: hidden;
+  }
+
+  /* ── SCANLINES ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.08) 2px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  /* ── GRID BG ── */
+  .bg-grid {
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(var(--green-glow2) 1px, transparent 1px),
+      linear-gradient(90deg, var(--green-glow2) 1px, transparent 1px);
+    background-size: 44px 44px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .bg-radial {
+    position: fixed;
+    top: -120px; left: 50%;
+    transform: translateX(-50%);
+    width: 700px; height: 500px;
+    background: radial-gradient(ellipse, rgba(0,255,136,0.07) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAVBAR ── */
+  nav {
+    position: relative; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px;
+    height: 60px;
+    background: rgba(5,14,9,0.9);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(8px);
+  }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.12em;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .nav-logo svg { width: 22px; height: 22px; }
+
+  .nav-status {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--green);
+    border: 1px solid rgba(0,255,136,0.25);
+    padding: 5px 12px;
+    border-radius: 2px;
+  }
+
+  .nav-status .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+    animation: blink 1.4s ease-in-out infinite;
+  }
+
+  /* ── MAIN ── */
+  main {
+    position: relative; z-index: 10;
+    min-height: calc(100vh - 60px - 48px);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 60px 24px;
+    gap: 40px;
+  }
+
+  /* ── SHIELD ── */
+  .shield-wrap {
+    position: relative;
+    width: 160px; height: 160px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(0,255,136,0.12);
+  }
+  .ring-1 { width: 96px;  height: 96px;  animation: pulse 2.4s ease-in-out infinite 0s; }
+  .ring-2 { width: 126px; height: 126px; animation: pulse 2.4s ease-in-out infinite 0.5s; }
+  .ring-3 { width: 158px; height: 158px; animation: pulse 2.4s ease-in-out infinite 1s; }
+
+  @keyframes pulse {
+    0%,100% { opacity: 0.7; transform: scale(1); }
+    50%      { opacity: 0.1; transform: scale(1.04); }
+  }
+
+  .shield-core {
+    position: relative;
+    width: 72px; height: 72px;
+    background: rgba(0,20,12,0.9);
+    border: 1px solid rgba(0,255,136,0.3);
+    display: flex; align-items: center; justify-content: center;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+
+  .shield-core svg { width: 32px; height: 32px; }
+
+  .spinner-ring {
+    position: absolute;
+    width: 84px; height: 84px;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    border-top: 1px solid rgba(0,255,136,0.7);
+    border-right: 1px solid rgba(0,255,136,0.2);
+    animation: spin 1.8s linear infinite;
+  }
+
+  @keyframes spin  { to { transform: rotate(360deg); } }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  /* ── HEADLINE ── */
+  .headline-block { text-align: center; max-width: 520px; }
+
+  .eyebrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: rgba(0,255,136,0.55);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .headline {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: clamp(22px, 4vw, 34px);
+    letter-spacing: 0.08em;
+    color: var(--green);
+    text-shadow: 0 0 30px rgba(0,255,136,0.4), 0 0 60px rgba(0,255,136,0.15);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    line-height: 1.2;
+  }
+
+  .subline {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── STEPS ── */
+  .steps-panel {
+    width: 100%; max-width: 440px;
+    border: 1px solid var(--border);
+    background: rgba(7,18,16,0.7);
+    backdrop-filter: blur(6px);
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: rgba(0,255,136,0.4);
+    text-transform: uppercase;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .step {
+    display: flex; align-items: center; gap: 14px;
+    padding: 13px 18px;
+    border-bottom: 1px solid rgba(0,255,136,0.06);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    transition: background 0.3s;
+  }
+  .step:last-child { border-bottom: none; }
+
+  .step-ico {
+    width: 24px; height: 24px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+  }
+
+  .step.done  .step-ico { background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.35); color: var(--green); }
+  .step.active .step-ico{ background: rgba(0,200,255,0.08); border: 1px solid rgba(0,200,255,0.3); color: #40d8ff; animation: blink 0.9s ease-in-out infinite; }
+  .step.wait  .step-ico { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.15); }
+
+  .step-text { flex: 1; }
+  .step.done  .step-text { color: rgba(200,232,210,0.85); }
+  .step.active .step-text{ color: rgba(200,232,210,0.7); }
+  .step.wait  .step-text { color: rgba(200,232,210,0.25); }
+
+  .step-ms {
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    min-width: 40px;
+    text-align: right;
+  }
+  .step.done  .step-ms { color: rgba(0,255,136,0.5); }
+  .step.active .step-ms{ color: rgba(0,200,255,0.4); }
+  .step.wait  .step-ms { color: rgba(255,255,255,0.12); }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    width: 100%; max-width: 440px;
+  }
+
+  .progress-top {
+    display: flex; justify-content: space-between;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .progress-pct { color: var(--green); }
+
+  .progress-bar {
+    height: 3px;
+    background: rgba(0,255,136,0.08);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 10;
+    height: 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px;
+    border-top: 1px solid var(--border);
+    background: rgba(5,14,9,0.85);
+  }
+
+  .footer-left, .footer-right {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.09em;
+    color: var(--text-muted);
+  }
+
+  .cf-logo {
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.09em;
+    color: rgba(255,255,255,0.18);
+  }
+
+  .cf-logo svg { width: 14px; height: 14px; opacity: 0.45; }
+
+  /* ── DONE STATE ── */
+  .done-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    z-index: 50;
+    align-items: center; justify-content: center;
+    background: rgba(5,14,9,0.85);
+  }
+
+  .done-overlay.visible { display: flex; }
+
+  .done-card {
+    text-align: center;
+    border: 1px solid rgba(0,255,136,0.3);
+    background: rgba(7,18,16,0.95);
+    padding: 48px 56px;
+    max-width: 380px;
+  }
+
+  .done-icon { font-size: 40px; color: var(--green); text-shadow: 0 0 20px var(--green); margin-bottom: 20px; }
+
+  .done-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 20px; font-weight: 900;
+    letter-spacing: 0.1em;
+    color: var(--green);
+    text-transform: uppercase;
+    text-shadow: 0 0 20px rgba(0,255,136,0.4);
+    margin-bottom: 10px;
+  }
+
+  .done-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px; letter-spacing: 0.08em;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  .redirect-bar {
+    margin-top: 24px;
+    width: 100%; height: 2px;
+    background: rgba(0,255,136,0.1);
+    overflow: hidden;
+  }
+
+  .redirect-fill {
+    height: 100%;
+    background: var(--green);
+    width: 0%;
+    animation: redirect 3s linear forwards;
+  }
+
+  @keyframes redirect { to { width: 100%; } }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-radial"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <svg viewBox="0 0 22 22" fill="none">
+      <path d="M11 2L20 6v7c0 4.4-4 8.4-9 10C6 21 2 17 2 13V6z"
+            stroke="rgba(0,255,136,0.75)" stroke-width="1.4" fill="rgba(0,255,136,0.07)"/>
+      <path d="M7.5 11l2.5 2.5 4.5-5" stroke="rgba(0,255,136,0.9)" stroke-width="1.4"
+            stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    ENCRYPTED
+  </a>
+
+  <div class="nav-status">
+    <div class="dot"></div>
+    SYSTEM STATUS: ONLINE
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main>
+
+  <!-- Shield -->
+  <div class="shield-wrap">
+    <div class="ring ring-1"></div>
+    <div class="ring ring-2"></div>
+    <div class="ring ring-3"></div>
+    <div class="spinner-ring" id="spinRing"></div>
+    <div class="shield-core">
+      <svg viewBox="0 0 32 32" fill="none">
+        <path d="M16 3L28 8v10c0 7-6 12-12 14C8 30 2 25 2 18V8z"
+              stroke="rgba(0,255,136,0.7)" stroke-width="1.5"
+              fill="rgba(0,255,136,0.07)"/>
+        <path d="M10 16.5l4 4 8-8.5" stroke="#00ff88" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Text -->
+  <div class="headline-block">
+    <div class="eyebrow">// CLOUDFLARE SECURITY CHECK</div>
+    <div class="headline" id="headline">VERIFYING<br>CONNECTION</div>
+    <div class="subline" id="subline">
+      Kernel-level verification in progress.<br>
+      This will only take a moment.
+    </div>
+  </div>
+
+  <!-- Steps -->
+  <div class="steps-panel">
+    <div class="panel-header">
+      <span>SECURITY CHECKS</span>
+      <span id="stepCount">1 / 4</span>
+    </div>
+
+    <div class="step done" id="s1">
+      <div class="step-ico">✓</div>
+      <span class="step-text">SSL/TLS certificate validation</span>
+      <span class="step-ms">9ms</span>
+    </div>
+    <div class="step done" id="s2">
+      <div class="step-ico">✓</div>
+      <span class="step-text">Request signature check</span>
+      <span class="step-ms">24ms</span>
+    </div>
+    <div class="step active" id="s3">
+      <div class="step-ico">◈</div>
+      <span class="step-text">Browser environment analysis</span>
+      <span class="step-ms" id="ms3">...</span>
+    </div>
+    <div class="step wait" id="s4">
+      <div class="step-ico">○</div>
+      <span class="step-text">Access clearance granted</span>
+      <span class="step-ms">—</span>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <span>VERIFICATION PROGRESS</span>
+      <span class="progress-pct" id="pctLabel">0%</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progFill"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">encrypted.rest &copy; 2025</div>
+  <div class="cf-logo">
+    <svg viewBox="0 0 16 10" fill="currentColor">
+      <path d="M12.8 6.4c.1-.3.1-.5.1-.8 0-1.8-1.5-3.2-3.3-3.2-.9 0-1.7.3-2.3.9C6.9 2.5 6 2 5 2 3.3 2 2 3.3 2 5c0 .1 0 .3.1.4C1.4 5.6 1 6.2 1 7c0 1 .8 1.8 1.8 1.8h9.4c.9 0 1.7-.7 1.7-1.6 0-.5-.3-1-.9-1.2-.1-.2-.1-.4-.2-.6z"/>
+    </svg>
+    Protected by Cloudflare
+  </div>
+  <div class="footer-right" id="rayId">Ray ID: 8f4a2c9d1b0e7a35</div>
+</footer>
+
+<!-- DONE OVERLAY -->
+<div class="done-overlay" id="doneOverlay">
+  <div class="done-card">
+    <div class="done-icon">✓</div>
+    <div class="done-title">ACCESS GRANTED</div>
+    <div class="done-sub">
+      Security check completed.<br>
+      Redirecting to encrypted.rest...
+    </div>
+    <div class="redirect-bar">
+      <div class="redirect-fill"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const fill   = document.getElementById('progFill');
+  const pct    = document.getElementById('pctLabel');
+  const s3     = document.getElementById('s3');
+  const s4     = document.getElementById('s4');
+  const ms3    = document.getElementById('ms3');
+  const sc     = document.getElementById('stepCount');
+  const hl     = document.getElementById('headline');
+  const sub    = document.getElementById('subline');
+  const spin   = document.getElementById('spinRing');
+  const done   = document.getElementById('doneOverlay');
+
+  let prog = 0;
+  const target1 = 65, target2 = 100;
+
+  const rand = (a,b) => Math.floor(Math.random()*(b-a)+a);
+
+  // Animate progress to 65%
+  const t1 = setInterval(() => {
+    if (prog >= target1) { clearInterval(t1); return; }
+    prog += rand(1, 4);
+    if (prog > target1) prog = target1;
+    fill.style.width = prog + '%';
+    pct.textContent = prog + '%';
+  }, 60);
+
+  // Step 3 → done, step 4 → active at 2.8s
+  setTimeout(() => {
+    s3.className = 'step done';
+    s3.querySelector('.step-ico').textContent = '✓';
+    ms3.textContent = rand(70,130) + 'ms';
+
+    s4.className = 'step active';
+    s4.querySelector('.step-ico').textContent = '◈';
+    s4.querySelector('.step-ms').textContent = '...';
+    sc.textContent = '3 / 4';
+
+    const t2 = setInterval(() => {
+      if (prog >= target2) { clearInterval(t2); return; }
+      prog += rand(1, 3);
+      if (prog > target2) prog = target2;
+      fill.style.width = prog + '%';
+      pct.textContent = prog + '%';
+    }, 55);
+  }, 2800);
+
+  // All done at 5.2s
+  setTimeout(() => {
+    s4.className = 'step done';
+    s4.querySelector('.step-ico').textContent = '✓';
+    s4.querySelector('.step-ms').textContent = rand(10,20) + 'ms';
+    sc.textContent = '4 / 4';
+    spin.style.display = 'none';
+    done.classList.add('visible');
+  }, 5200);
+</script>
+</body>
+</html>
